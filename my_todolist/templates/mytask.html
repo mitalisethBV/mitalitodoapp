@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Chela+One&display=swap" rel="stylesheet">
+    <title>Tasks todos</title>
+  <style>
+   body{
+     background-color: #b6e1fe;
+   }
+    .mytask{
+      float: right;
+      width: 70%;
+      
+    }
+    .navbar{
+      height: 80px;
+    }
+    .mytable {
+    border-collapse: collapse;
+    margin: -250px 0 0 370px;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.mytable thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+.mytable th,
+.mytable td {
+    padding: 12px 15px;
+}
+.mytable tbody tr {
+    border-bottom: 1px solid #89cfe0;
+    background-color: rgba(142, 205, 241, 0.452);
+    font-size: 25px;
+    height: 70px;
+    
+}
+
+.mytable tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+    font-size: 25px;
+}
+
+.mytable tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+.mytable tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+.taskform{
+  margin-left: 50px;
+ 
+}
+.taskform label{
+    font-size: 25px;
+  }
+.taskform input{
+  margin-bottom: 40px;
+  margin-left: 30px;
+  height: 40px;
+  border-radius: 0.1cm;
+}
+.submit{
+  width: 75px;
+}
+.submit:hover{
+  background-color: black;
+}
+h2{
+  margin: 130px 0 40px 40px;
+  color: #1e3a68;
+  font-size: 50px;
+  font-weight: 100;
+  font-family: 'Permanent Marker', cursive;
+
+}
+.navbar-brand{
+  font-size: 45px;
+  margin: 0 0 0 20px;
+  font-family: 'Chela One', cursive;
+}
+  </style>
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function(){
+
+        //so that user don't entre empty input we can disable the submit button initially till user don't provide task.
+        document.querySelector('#submit').disabled =  true;
+
+        // now to enable submit button when user press key by using onkeyup so user can submit it input
+        document.querySelector('#task').onkeyup = () =>{
+            if(document.querySelector('#task').value.length >0){
+                document.querySelector('#submit').disabled =  false;
+            }
+            else{
+                document.querySelector('#submit').disabled =  true;
+            }
+            
+        } 
+
+          document.querySelector('form').onsubmit = () => {
+              const task = document.querySelector('#task').value;
+              //console.log(task);   // it will print entred task to concole window of javascript
+              const li = document.createElement('li');
+              li.innerHTML =task;
+              document.querySelector('#tasks').append(li);
+              
+              document.querySelector('#task').value = '';
+
+              document.querySelector('#submit').disabled =  true; //disable again after submitting input
+
+              //stop form from submitting so tht entred value can be shown in colsole
+              return false   // it will stop form from submitting 
+          }
+                
+    });
+
+    </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-light " style="background-color: #4aa4e1;">
+    <a class="navbar-brand " href="/">To Do App</a>
+  </nav>
+      <h2>Add Items</h2>
+      <form action="" method='POST' class="taskform" >
+        {% csrf_token %}
+        <div class="title"></div>
+        <label>Your Task:</label>
+          <input style="margin-left: 60px;" type="text" name="title" id="task"  placeholder="Title">
+        </div>
+
+        <div class="submit">
+          <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <section class="mytask">
+        <table class="mytable" >
+          <tbody>
+            <tr height="70px">
+              <th>Username</th>
+
+              <th>Dated On</th>
+              <th>Status</th>
+              <th>Delete task</th>
+              <th>Update task</th>
+              <th>Change status</th>
+
+            </tr>
+            {% for item in todo_items %}
+
+            <tr height="60px">
+              <td>{{item}} </td>
+              <td>{{item.added_date}} </td>
+              <td>{{item.status}} </td>
+              <td><a style="padding-left: 45px;" href="{% url 'my_todolist:delete_task' item.id %}">🗑️</a></td>
+              <td><a href="{% url 'my_todolist:edit_task' item.id %}">Update</a></td>
+              <td>
+
+                <a href="/edit_status/{{item.id}}/completed" title="completed">✅</a>
+
+                <a href="/edit_status/{{item.id}}/pending" title="pending">🕑</a>
+
+              </td>
+
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"
+    integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"
+    integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>
